@@ -1,0 +1,29 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up .env file
+        run: |
+          touch .env
+          echo "${{ secrets.ENV_DEV }}" > .env
+          chmod 600 .env
+
+      - name: Pull latest code
+        run: |
+          git pull
+
+      - name: Build and run Docker Compose
+        run: |
+          # Build and run Docker Compose
+          docker-compose up --build -d
+          docker image prune -f
